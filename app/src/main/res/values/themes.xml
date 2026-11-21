@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.DailyOS" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#05071A</item>
+        <item name="android:navigationBarColor">#05071A</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
