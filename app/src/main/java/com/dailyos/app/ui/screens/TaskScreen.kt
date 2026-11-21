@@ -25,23 +25,43 @@ fun TaskScreen() {
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Text("Tugas", fontSize = 22.sp, color = DailyColors.TextPrimary)
+        
         Row(Modifier.padding(vertical = 8.dp)) {
-            OutlinedTextField(input, { input = it }, Modifier.weight(1f), placeholder = { Text("Tugas...") }, singleLine = true)
+            OutlinedTextField(
+                value = input,
+                onValueChange = { input = it },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("Tugas...") },
+                singleLine = true
+            )
             Button(onClick = {
                 if (input.isNotBlank()) scope.launch {
-                    db.taskDao().insert(TaskEntity(title = input.trim())); input = ""
+                    db.taskDao().insert(TaskEntity(title = input.trim()))
+                    input = ""
                 }
             }) { Text("+") }
         }
+        
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(tasks) { task ->
-                Card(Modifier.fillMaxWidth().clickable {
-                    scope.launch { db.taskDao().update(task.copy(isCompleted = !task.isCompleted)) }
-                }) {
-                    Row(Modifier.padding(12.dp)) {
-                        Checkbox(checked = task.isCompleted, onCheckedChange = {
-                            scope.launch { db.taskDao().update(task.copy(isCompleted = it)) }
-                        })
+                Card(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            scope.launch {
+                                db.taskDao().update(task.copy(isCompleted = !task.isCompleted))
+                            }
+                        }
+                ) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = task.isCompleted,
+                            onCheckedChange = { isChecked ->
+                                scope.launch {
+                                    db.taskDao().update(task.copy(isCompleted = isChecked))
+                                }
+                            }
+                        )
                         Text(task.title, color = DailyColors.TextPrimary)
                     }
                 }
